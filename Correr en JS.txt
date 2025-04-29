@@ -1,0 +1,19 @@
+Instala las dependencias:
+
+Abre una terminal en la carpeta de tu proyecto y ejecuta npm install para instalar todas las dependencias listadas en tu package.json.
+
+Corre el servidor de desarrollo:
+
+Ejecuta npm run dev en la terminal para iniciar el servidor de desarrollo de Vite. Esto debería abrir tu proyecto en el navegador automáticamente.
+
+Construye el proyecto:
+
+Si quieres crear una versión optimizada para producción, ejecuta npm run build. Esto generará una carpeta dist con los archivos listos para ser desplegados.
+
+Previsualiza la construcción:
+
+Para previsualizar la versión construida, ejecuta npm run preview.
+
+Linting:
+
+Puedes ejecutar npm run lint para revisar tu código con ESLint y asegurarte de que sigue las convenciones de estilo y no tiene errores.
