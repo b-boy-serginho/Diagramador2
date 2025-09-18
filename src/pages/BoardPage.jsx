@@ -1,9 +1,8 @@
 //BoardPage.jsx
-import React, { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   Background,
   Controls,
-  Position,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -18,12 +17,14 @@ import { onSnapshot, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase-confing/Firebase";
 import { getAuth } from "firebase/auth";
 import JSZip from "jszip";
+import { v4 as uuidv4 } from "uuid";
 
 const nodeTypes = { classNode: ClassNode };
 const edgeTypes = { "start-end": CustomEdgeStartEnd };
-const edgeOptions = { animated: true, style: { stroke: "black" } };
+// const edgeOptions = { animated: true, style: { stroke: "black" } };
 const connectionLineStyle = { stroke: "black" };
-let nodeId = 0;
+let nodeId = uuidv4().length;
+// let nodeId = 0;
 
 const BoardPage = () => {
   const [nodes, setNodes] = useState([]);
@@ -888,7 +889,8 @@ export class CrudUmlComponent {
           onEdgeClick={onEdgeClick}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
-          edgeOptions={edgeOptions}
+          edgeOptions={{ animated: true }}
+          // edgeOptions={edgeOptions}
           style={{ width: "100%", height: "100%" }}
           connectionLineStyle={connectionLineStyle}
         >

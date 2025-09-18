@@ -32,6 +32,7 @@ const Board = () => {
   const navigate = useNavigate();
   const boardCollection = collection(db, "board");
   console.log(auth);
+  console.log(auth.currentUser); // Debe mostrar tu usuario autenticado
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +45,8 @@ const Board = () => {
       return;
     }
     try {
-      await addDoc(boardCollection, { description, host: auth.currentUser.email, participantes: [auth.currentUser.email] });
+      await addDoc(boardCollection, { description, host: auth.currentUser.email, participantes: [auth.currentUser.email],
+      });
       Swal.fire({
         title: "Tablero creado!",
         text: "Tu tablero ha sido agregado exitosamente.",
@@ -325,6 +327,7 @@ const Board = () => {
             className="hidden" // Ocultar el input y manejar el click desde el label
           /> */}
         </div>
+
         {/* Lista de Tableros */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-600 mb-2">
@@ -466,7 +469,6 @@ const Board = () => {
           </form>
         </Modal>
 
-        {/* Modal de invitación */}
         {/* Modal de invitación */}
         <Modal
           isOpen={inviteModalIsOpen}

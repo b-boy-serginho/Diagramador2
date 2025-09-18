@@ -22,6 +22,8 @@ const firebaseConfig = {
 //   measurementId: "G-XVP864DSF9"
 // };
 
+// npx update-browserslist-db@latest
+
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app); // Exportar auth
