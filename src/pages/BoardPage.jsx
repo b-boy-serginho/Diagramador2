@@ -18,6 +18,8 @@ import { db } from "../firebase-confing/Firebase";
 import { getAuth } from "firebase/auth";
 import JSZip from "jszip";
 import { v4 as uuidv4 } from "uuid";
+import AIPanel from "../components/ai/AIPanel";
+import { FaRobot } from "react-icons/fa";
 
 const nodeTypes = { classNode: ClassNode };
 const edgeTypes = { "start-end": CustomEdgeStartEnd };
@@ -36,6 +38,7 @@ const BoardPage = () => {
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [editingData, setEditingData] = useState(null);
   const [editingEdge, setEditingEdge] = useState(null);
+  const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
   const { id: boardId } = useParams();
 
   const reactFlowInstance = useReactFlow();
@@ -572,6 +575,23 @@ export class CrudUmlComponent {
     await updateBoardData(updatedEdges, "edges");
     setSelectedEdge(null);
   };
+
+  // Función para manejar la generación de diagramas desde IA
+  const handleGenerateDiagram = async (generatedNodes, generatedEdges) => {
+    try {
+      // Actualizar el estado local
+      setNodes(generatedNodes);
+      setEdges(generatedEdges);
+      
+      // Actualizar Firebase
+      await updateBoardData(generatedNodes, "nodes");
+      await updateBoardData(generatedEdges, "edges");
+      
+      console.log("Diagrama generado por IA y guardado exitosamente");
+    } catch (error) {
+      console.error("Error al guardar diagrama generado por IA:", error);
+    }
+  };
   //funcion atribute
   const atribute = (name, i, id) => {
     return `<UML:Attribute name="${name}" changeable="none" visibility="private" ownerScope="instance" targetScope="instance">
@@ -813,7 +833,7 @@ export class CrudUmlComponent {
         const boardData = docSnapshot.data();
         setNodes(boardData.nodes || []);
         setEdges(boardData.edges || []);
-        nodeId = boardData.nodes.length;
+        nodeId = (boardData.nodes || []).length;
       }
       else {
 
@@ -839,44 +859,48 @@ export class CrudUmlComponent {
 
       <div style={{ flex: 1, position: "relative" }}>
 
-        <div className="flex">
+        <div className="flex items-center justify-between p-4 bg-white shadow-sm border-b">
+          <div className="flex items-center space-x-2">
           <button
             onClick={saveXMLFile}
-            className=" mx-5 bg-yellow-400 text-black py-2 px-3 rounded-full mb-4 hover:bg-gray-400 transition-colors duration-200 "
+              className="bg-yellow-400 text-black py-2 px-3 rounded-full hover:bg-yellow-500 transition-colors duration-200"
           >
             Exportar XML
           </button>
           <button
             onClick={exportToJSON}
-            className="mx-2 bg-blue-500 text-white py-2 px-3 rounded-full hover:bg-blue-600 transition-colors"
+              className="bg-blue-500 text-white py-2 px-3 rounded-full hover:bg-blue-600 transition-colors"
           >
             Exportar JSON
           </button>
           <button
             onClick={importFromJSON}
-            className="mx-2 bg-green-500 text-white py-2 px-3 rounded-full hover:bg-green-600 transition-colors"
+              className="bg-green-500 text-white py-2 px-3 rounded-full hover:bg-green-600 transition-colors"
           >
             Importar JSON
           </button>
-
-          {/* <button
-            onClick={generateFrontendCode}
-            className="mx-2 bg-purple-500 text-white py-2 px-3 rounded-full hover:bg-purple-600 transition-colors"
-          >
-            Generar Frontend
-          </button> */}
           <button
             onClick={() => generateFrontendCode(nodes)}
-            className="mx-2 bg-purple-500 text-white py-2 px-3 roun0ded-full hover:bg-purple-600 transition-colors"
+              className="bg-purple-500 text-white py-2 px-3 rounded-full hover:bg-purple-600 transition-colors"
           >
             Generar Frontend
           </button>
-
-          <ul>
-            {participantes.map((participante) => (
-              <li>{participante + ' '}</li>
-            ))}
-          </ul>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setIsAIPanelOpen(true)}
+              className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg"
+            >
+              <FaRobot className="text-lg" />
+              <span>Asistente IA</span>
+            </button>
+            
+            <div className="text-sm text-gray-600">
+              <span className="font-medium">Participantes:</span>
+              <span className="ml-1">{participantes.join(', ')}</span>
+            </div>
+          </div>
         </div>
         <ReactFlow
           nodes={nodes}
@@ -889,8 +913,6 @@ export class CrudUmlComponent {
           onEdgeClick={onEdgeClick}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
-          edgeOptions={{ animated: true }}
-          // edgeOptions={edgeOptions}
           style={{ width: "100%", height: "100%" }}
           connectionLineStyle={connectionLineStyle}
         >
@@ -898,6 +920,15 @@ export class CrudUmlComponent {
           <Controls />
         </ReactFlow>
       </div>
+
+      {/* Panel de IA */}
+      <AIPanel
+        isOpen={isAIPanelOpen}
+        onClose={() => setIsAIPanelOpen(false)}
+        nodes={nodes}
+        edges={edges}
+        onGenerateDiagram={handleGenerateDiagram}
+      />
     </div>
   );
 };

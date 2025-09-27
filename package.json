@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/genai": "^1.21.0",
+    "@google/generative-ai": "^0.24.1",
     "@heroicons/react": "^2.1.5",
     "@xyflow/react": "^12.3.0",
+    "axios": "^1.12.2",
     "caniuse-lite": "^1.0.30001741",
     "firebase": "^10.13.2",
     "jszip": "^3.10.1",
