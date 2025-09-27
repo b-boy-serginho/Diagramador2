@@ -1,3 +1,4 @@
+// src/components/ai/DiagramGenerator.jsx
 import React, { useState } from 'react';
 import { FaMagic, FaSpinner, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 import aiService from '../../services/aiService';

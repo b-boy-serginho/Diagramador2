@@ -9,6 +9,66 @@ class AIService {
     this.baseURL = GEMINI_API_URL;
   }
 
+   async generateSpringBootCodeFromDiagram(nodes, edges) {
+    try {
+      const diagramData = {
+        classes: nodes.map(node => ({
+          name: node.data.className,
+          attributes: node.data.attributes,
+          methods: node.data.methods
+        })),
+        relationships: edges.map(edge => ({
+          source: edge.source,
+          target: edge.target,
+          type: edge.data.type
+        }))
+      };
+
+      const prompt = `
+        Genera un proyecto Spring Boot basado en el siguiente diagrama UML de clases:
+        
+        ${JSON.stringify(diagramData, null, 2)}
+        
+        Crea las siguientes capas:
+        1. **Model/Entity**: Clase con atributos y métodos.
+        2. **Repository**: Interfaz que extiende JpaRepository.
+        3. **Service**: Lógica de negocio que maneja las entidades.
+        4. **Controller**: Controlador REST para exponer la API.
+        
+        Responde SOLO con el código generado, sin explicaciones adicionales.
+        Asegúrate de que el código sea válido y siga las mejores prácticas de Spring Boot.
+      `;
+
+      const response = await axios.post(
+        `${this.baseURL}?key=${this.apiKey}`,
+        {
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.5,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 3000,  // Aumento para cubrir las 4 capas de código
+          }
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const content = response.data.candidates[0].content.parts[0].text;
+      return content; // El código generado para las 4 capas de Spring Boot
+    } catch (error) {
+      console.error('Error generando el código de Spring Boot:', error);
+      throw new Error('Error al generar el código de Spring Boot');
+    }
+  }
+
   async generateDiagramFromText(description) {
     try {
       const prompt = `

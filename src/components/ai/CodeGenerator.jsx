@@ -1,3 +1,4 @@
+// src/components/ai/CodeGenerator.jsx
 import React, { useState } from 'react';
 import { FaCode, FaSpinner, FaDownload, FaCopy, FaCheck } from 'react-icons/fa';
 import aiService from '../../services/aiService';

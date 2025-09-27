@@ -1,4 +1,4 @@
-// firebase.js
+// src/firebase-confing/Firebase.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';

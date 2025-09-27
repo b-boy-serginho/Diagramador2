@@ -1,3 +1,4 @@
+// src/components/ai/DiagramAnalyzer.jsx
 import React, { useState } from 'react';
 import { FaSearch, FaSpinner, FaCheck, FaExclamationTriangle, FaInfoCircle, FaLightbulb } from 'react-icons/fa';
 import aiService from '../../services/aiService';
